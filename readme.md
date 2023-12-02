@@ -18,13 +18,13 @@ The script has two files. The first one is `clone_device.sh` and the second is `
    ```bash
    chmod +x clone_device.sh
    # Then run
-   ./device_clone.sh
+   ./clone_device.sh
 
    # Pro tip:
    # If you are lazy you can always type the first couple of lines and
    # add the '*' to search for the trailing letters/characters of the file
    # name as long as no file has a similar name to the script
-   ./device*
+   ./clone*
    ```
 
 2. We only need two files for `gen_pif_custom.sh` to generate the config file:
