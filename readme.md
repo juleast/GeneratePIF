@@ -55,7 +55,7 @@ The script has two files. The first one is `clone_device.sh` and the second is `
 
 8. Rename this file to `pif.json` and move it inside `/data/adb` folder on your device using your favorite root explorer
    - if you know how to use adb and shell commands:
-   ```
+   ```bash
    cp path_to_your_file /data/adb/
    ```
 
