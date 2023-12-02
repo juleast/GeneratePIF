@@ -4,9 +4,9 @@
 # /vendor/build.prop (vendor-build.prop) from the stock
 # ROM of a device you want to spoof values from
 
-echo "system build.prop to custom.pif.json/.prop creator \
-    \n  by osm0sis @ xda-developers \
-    \n and modified by Juleast @ https://github.com/juleast";
+echo -e "system build.prop to custom.pif.json/.prop creator \
+    \nby osm0sis @ xda-developers \
+    \nand modified by Juleast @ https://github.com/juleast";
 
 case $0 in
   *.sh) shdir="$0";;
@@ -15,19 +15,22 @@ esac;
 shdir=$(dirname "$(readlink -f "$shdir")");
 
 readarray -t dir_arr < <(find . -maxdepth 1 -type d)
-for ((a = 1 ; a < ${#dir_arr[@]} ; a++)); do echo $a ${dir_arr[$a]}; done
+for ((a = 1 ; a < ${#dir_arr[@]} ; a++)); do echo "$a. ${dir_arr[$a]}"; done
 
 read -p "Enter number: " arr_index
-if [ "$arr_index" -gt "${#dir_arr[@]}" ] || [ "$arr_index" -lt "${#dir_arr[@]}" ]; then
+if [ "$arr_index" -gt "${#dir_arr[@]}" ] || [ "$arr_index" -lt 0 ]; then
   echo Invalid index!
   echo Exiting...
-  exit 1
+  return
+elif [ "${dir_arr[$arr_index]}" = "./.git" ]; then
+  echo This is a .git folder. Rerun the script.
+  return
 else
+  cd $shdir
   cd ${dir_arr[$arr_index]}
+  main
 fi
 
-cd $shdir
-main()
 
 item() { echo "\n- $@"; }
 die() { 
@@ -137,7 +140,5 @@ main() {
 
   echo
   echo "Done!"
+  cd ../
 }
-
-
-cd ../
