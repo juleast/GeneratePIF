@@ -22,13 +22,12 @@ esac;
 shdir=$(dirname "$(readlink -f "$shdir")");
 
 readarray -t dir_arr < <(find . -maxdepth 1 -type d)
-dir_arr[4]="random yeet"
 for ((a = 1 ; a < ${#dir_arr[@]} ; a++)); do echo $a ${dir_arr[$a]}; done
 
 read -p "Enter number: " arr_index
 if [ "$arr_index" -gt "${#dir_arr[@]}" ] || [ "$arr_index" -lt "${#dir_arr[@]}" ]; then
   echo Invalid index!
-  echo Exitting...
+  echo Exiting...
   exit 1
 else
   cd ${dir_arr[$arr_index]}

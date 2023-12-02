@@ -39,6 +39,7 @@ if [ -d "system" ]; then
     mv system/system/build.prop ./build.prop
     rm -rf system
   fi
+  rm -rf system
 fi
 
 if [ -d "vendor" ]; then
