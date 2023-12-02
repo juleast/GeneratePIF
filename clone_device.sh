@@ -62,7 +62,8 @@ delete() {
 }
 
 echo "### Git clone script for phone FP dumps ###"
-echo "Script by Juleast @ https://github.com/juleast"
+echo -e "Script by Juleast @ https://github.com/juleast \
+        \n"
 
 # main script
 read -p "Paste repo URL here: " url

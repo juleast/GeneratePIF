@@ -31,6 +31,7 @@ The script has two files. The first one is `clone_device.sh` and the second is `
 
    - `build.prop` from `system` and `vendor` directories are cloned.
    - For just in case, the `build.prop` from `system/product` is also cloned if available.
+   - \*Do not worry if the script outputs some errors. As long as the end result has at least 2 files, you are good.
 
 3. The script will then move and rename files appropriately for the second script to use in the root of the repo directory.
 
