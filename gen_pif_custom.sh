@@ -18,6 +18,10 @@ readarray -t dir_arr < <(find . -maxdepth 1 -type d)
 for ((a = 1 ; a < ${#dir_arr[@]} ; a++)); do echo "$a. ${dir_arr[$a]}"; done
 
 read -p "Enter number: " arr_index
+if [ "$arr_index" = "" ]; then
+  echo "What the...?"
+  return
+fi
 if [ "$arr_index" -gt "${#dir_arr[@]}" ] || [ "$arr_index" -lt 0 ]; then
   echo Invalid index!
   echo Exiting...
@@ -32,9 +36,9 @@ else
 fi
 
 
-item() { echo "\n- $@"; }
+item() { echo -e "\n- $@"; }
 die() { 
-  echo "\n\n! $@"
+  echo -e "\n\n! $@"
   return
 }
 file_getprop() { grep "^$2=" "$1" 2>/dev/null | tail -n1 | cut -d= -f2-; }
