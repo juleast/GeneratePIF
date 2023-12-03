@@ -10,22 +10,31 @@ The script has two files. The first one is `clone_device.sh` and the second is `
 
 #### The structure
 
+0. (New) skip running all the scripts individually by running `start.sh` file instead. Running them individually can still be useful if you just want to repeat regenerating the json files only.
+
+   - Make `start.sh` exectuable and run
+     ```bash
+     chmod +x start.sh
+     # Run the script
+     ./start.sh
+     ```
+
 1. The first script clones a repo from a device repo link the user will provide from the dump repo: [https://dumps.tadiphone.dev/dumps/](https://dumps.tadiphone.dev/dumps/).
    It inits the git repo without checkout so that we don't have to download unnecessary files.
 
    - Make sure the script is exectuable first:
 
-   ```bash
-   chmod +x clone_device.sh
-   # Then run
-   ./clone_device.sh
+     ```bash
+     chmod +x clone_device.sh
+     # Then run
+     ./clone_device.sh
 
-   # Pro tip:
-   # If you are lazy you can always type the first couple of lines and
-   # add the '*' to search for the trailing letters/characters of the file
-   # name as long as no file has a similar name to the script
-   ./clone*
-   ```
+     # Pro tip:
+     # If you are lazy you can always type the first couple of lines and
+     # add the '*' to search for the trailing letters/characters of the file
+     # name as long as no file has a similar name to the script
+     ./clone*
+     ```
 
 2. We only need two files for `gen_pif_custom.sh` to generate the config file:
 
@@ -39,14 +48,14 @@ The script has two files. The first one is `clone_device.sh` and the second is `
 
    - Make sure the script is exectuable first:
 
-   ```bash
-   chmod +x gen_pif_custom.sh
-   # Then run
-   ./gen_pif.custom.sh
+     ```bash
+     chmod +x gen_pif_custom.sh
+     # Then run
+     ./gen_pif.custom.sh
 
-   # Or use the shortened version
-   ./gen*
-   ```
+     # Or use the shortened version
+     ./gen*
+     ```
 
 5. Running the second script will output a list of directories in the root of the script's directory.
 
@@ -56,9 +65,9 @@ The script has two files. The first one is `clone_device.sh` and the second is `
 
 8. Rename this file to `pif.json` and move it inside `/data/adb` folder on your device using your favorite root explorer
    - if you know how to use adb and shell commands:
-   ```bash
-   cp path_to_your_file /data/adb/
-   ```
+     ```bash
+     cp path_to_your_file /data/adb/
+     ```
 
 #### For manual generation
 
