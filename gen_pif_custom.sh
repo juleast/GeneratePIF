@@ -1,4 +1,4 @@
-#!/system/bin/sh
+#!/bin/bash
 #
 # To be run with the /system/build.prop (build.prop) and
 # /vendor/build.prop (vendor-build.prop) from the stock

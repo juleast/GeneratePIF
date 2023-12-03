@@ -1,5 +1,4 @@
-#!/system/bin/sh
-#
+#!/bin/bash
 # A repo URL has to be inputed in the input line.
 # Get the repo URL from the Android dumps repo (https://dumps.tadiphone.dev/dumps/)
 # Then go to brand_name --> device_name --> clone button.
