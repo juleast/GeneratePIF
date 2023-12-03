@@ -8,34 +8,6 @@ echo -e "system build.prop to custom.pif.json/.prop creator \
     \nby osm0sis @ xda-developers \
     \nand modified by Juleast @ https://github.com/juleast";
 
-case $0 in
-  *.sh) shdir="$0";;
-     *) shdir="$(lsof -p $$ 2>/dev/null | grep -o '/.*gen_pif_custom.sh$')";;
-esac;
-shdir=$(dirname "$(readlink -f "$shdir")");
-
-readarray -t dir_arr < <(find . -maxdepth 1 -type d)
-for ((a = 1 ; a < ${#dir_arr[@]} ; a++)); do echo "$a. ${dir_arr[$a]}"; done
-
-read -p "Enter number: " arr_index
-if [ "$arr_index" = "" ]; then
-  echo "What the...?"
-  return
-fi
-if [ "$arr_index" -gt "${#dir_arr[@]}" ] || [ "$arr_index" -lt 0 ]; then
-  echo Invalid index!
-  echo Exiting...
-  return
-elif [ "${dir_arr[$arr_index]}" = "./.git" ]; then
-  echo This is a .git folder. Rerun the script.
-  return
-else
-  cd $shdir
-  cd ${dir_arr[$arr_index]}
-  main
-fi
-
-
 item() { echo -e "\n- $@"; }
 die() { 
   echo -e "\n\n! $@"
@@ -146,3 +118,31 @@ main() {
   echo "Done!"
   cd ../
 }
+
+
+case $0 in
+  *.sh) shdir="$0";;
+     *) shdir="$(lsof -p $$ 2>/dev/null | grep -o '/.*gen_pif_custom.sh$')";;
+esac;
+shdir=$(dirname "$(readlink -f "$shdir")");
+
+readarray -t dir_arr < <(find . -maxdepth 1 -type d)
+for ((a = 1 ; a < ${#dir_arr[@]} ; a++)); do echo "$a. ${dir_arr[$a]}"; done
+
+read -p "Enter number: " arr_index
+if [ "$arr_index" = "" ]; then
+  echo "What the...?"
+  return
+fi
+if [ "$arr_index" -gt "${#dir_arr[@]}" ] || [ "$arr_index" -lt 0 ]; then
+  echo Invalid index!
+  echo Exiting...
+  return
+elif [ "${dir_arr[$arr_index]}" = "./.git" ]; then
+  echo This is a .git folder. Rerun the script.
+  return
+else
+  cd $shdir
+  cd ${dir_arr[$arr_index]}
+  main
+fi

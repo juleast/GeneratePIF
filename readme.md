@@ -10,7 +10,7 @@ The script has two files. The first one is `clone_device.sh` and the second is `
 
 #### The structure
 
-1. The first script clones a repo from a device repo link the user will provide from [the dump repo](https://dumps.tadiphone.dev/dumps/).
+1. The first script clones a repo from a device repo link the user will provide from the dump repo: [https://dumps.tadiphone.dev/dumps/](https://dumps.tadiphone.dev/dumps/).
    It inits the git repo without checkout so that we don't have to download unnecessary files.
 
    - Make sure the script is exectuable first:
