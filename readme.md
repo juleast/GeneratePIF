@@ -6,7 +6,9 @@ This repo has scripts for generating custom PIF config files to use with PIF v14
 
 ### How to use this?
 
-The script has two files. The first one is `clone_device.sh` and the second is `gen_pif_custom.sh` modified from [@osm0sis](https://github.com/osm0sis)' original `gen_pif_custom.sh`
+* The script has two files. The first one is `clone_device.sh` and the second is `gen_pif_custom.sh` modified from [@osm0sis](https://github.com/osm0sis)' original `gen_pif_custom.sh`
+* You first need to copy a device repo from the dump (link in step 1) and paste it when prompted after running the first script.
+  * Screenshot instructions --> [click here](https://imgur.com/a/dL88uHQ)
 
 #### The structure
 
