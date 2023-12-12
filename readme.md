@@ -1,18 +1,37 @@
-## Automatic script for PIF config generation
+# Automatic script for PIF config generation
+
+#### \*Please read all instructions carefully before asking any questions!
 
 ### What is this?
 
-This repo has scripts for generating custom PIF config files to use with PIF v14.
+This repo has scripts for generating custom PIF config files to use with PIF v14 and dev versions.
 
 ### How to use this?
 
-* The script has two files. The first one is `clone_device.sh` and the second is `gen_pif_custom.sh` modified from [@osm0sis](https://github.com/osm0sis)' original `gen_pif_custom.sh`
-* You first need to copy a device repo from the dump (link in step 1) and paste it when prompted after running the first script.
-  * Screenshot instructions --> [click here](https://imgur.com/a/dL88uHQ)
+- You first need to clone the repo and navigate to it:
+  ```bash
+  git clone https://github.com/juleast/GeneratePIF.git
+  # Navigate to the cloned directory
+  cd GeneratePIF
+  ```
+- The script has two files. The first one is `clone_device.sh` and the second is `gen_pif_custom.sh` modified from [@osm0sis](https://github.com/osm0sis)' original `gen_pif_custom.sh`
+- **You need to copy a device repo from tadi's device dump (link in step 1) and paste it when prompted after running the first script.**
+  - Screenshot instructions --> [click here](https://imgur.com/a/dL88uHQ)
 
-#### The structure
+### Termux Users
 
-0. (New) skip running all the scripts individually by running `start.sh` file instead. Running them individually can still be useful if you just want to repeat regenerating the json files only.
+- For those who want to use the Termux app to run these scripts on your phone, make sure you have the latest F-Droid release. Get it [here](https://f-droid.org/repo/com.termux_118.apk).
+- In order to run the script properly on Termux, `git` needs to be properly installed:
+  - First update the package mirrors then install git:
+    ```bash
+    pkg update
+    pkg install git
+    ```
+- If everything was updated and installed correctly, you can proceed to the main instructions as normal.
+
+### The structure
+
+1. Skip running all the scripts individually by running `start.sh` file instead. Running them individually can still be useful if you just want to repeat regenerating the json files only.
 
    - Make `start.sh` exectuable and run
      ```bash
@@ -21,8 +40,10 @@ This repo has scripts for generating custom PIF config files to use with PIF v14
      ./start.sh
      ```
 
-1. The first script clones a repo from a device repo link the user will provide from the dump repo: [https://dumps.tadiphone.dev/dumps/](https://dumps.tadiphone.dev/dumps/).
-   It inits the git repo without checkout so that we don't have to download unnecessary files.
+   * You can skip to [step 8](#step-8) if you run `start.sh` file.
+
+2. The first script clones a repo from a device repo link the user will provide from the dump repo: [https://dumps.tadiphone.dev/dumps/](https://dumps.tadiphone.dev/dumps/).
+   It initializes the git repo without checkout so that we don't have to download unnecessary files.
 
    - Make sure the script is exectuable first:
 
@@ -38,15 +59,16 @@ This repo has scripts for generating custom PIF config files to use with PIF v14
      ./clone*
      ```
 
-2. We only need two files for `gen_pif_custom.sh` to generate the config file:
+3. The required files are cloned individually using `git checkout branch -- filename`. 
+    * We only need two files for `gen_pif_custom.sh` to generate the config file:
+      - `build.prop` file from `system` and `vendor` directories are cloned.
+      - For just in case, the `build.prop` from `system/product` is also cloned if available.
+      - Do not worry if the script outputs some errors. As long as the end result has at least 2 files, you are good.
+        - In rare cases I have seen the fingerprints generate just fine with only one file but this is not always the case. Make sure to check that the end result produces **ALL** json properties properly. Reference [File format](#file-format) section for more info.
 
-   - `build.prop` from `system` and `vendor` directories are cloned.
-   - For just in case, the `build.prop` from `system/product` is also cloned if available.
-   - \*Do not worry if the script outputs some errors. As long as the end result has at least 2 files, you are good.
+4. The script will then move and rename files appropriately for the second script to use in the **root** of the repo directory.
 
-3. The script will then move and rename files appropriately for the second script to use in the root of the repo directory.
-
-4. Run the second script.
+5. Run the second script.
 
    - Make sure the script is exectuable first:
 
@@ -59,13 +81,36 @@ This repo has scripts for generating custom PIF config files to use with PIF v14
      ./gen*
      ```
 
-5. Running the second script will output a list of directories in the root of the script's directory.
+6. Running the second script will output a list of directories in the root of the script's directory for you to choose.
 
-6. Inputing the number corresponding to the desired directory will navigate to it and work its magic.
+   - You will see something like this:
 
-7. You will find your `custom.pif.json` file in the directory you chose in step 5.
+     ```bash
+     ### System build.prop to custom.pif.json/.prop creator ###
+     # by osm0sis @ xda-developers
+     # and modified by Juleast @ https://github.com/juleast
+     #
+     # Choose your cloned directory by referencing the number
+     # next to each directory name. (ignore .git or empty name directories)
+     1. .git
+     2. judyp
 
-8. Rename this file to `pif.json` and move it inside `/data/adb` folder on your device using your favorite root explorer
+     Enter number:
+     ```
+
+7. Inputting the number corresponding to the desired directory will navigate to it and work its magic.
+
+8. <a name="step-8"></a>You will find your `custom.pif.json` file in the directory you chose in step 7.
+
+    - **For Termux users**, the home directory of Termux is usually hidden in the temp directory. Thus, what I advise is to copy the generated file before you close Termux to avoid confusions and not have to dig through your phone's file manager app.
+      - ie. If you cloned and generated a fingerprint for LG V35 (judyp), you will see a folder named `judyp`.
+      - Navigate to the directory and copy the file you generated
+        ```bash
+        cd judyp
+        cp custom.pif.json /sdcard/Downloads
+        ```
+
+9. Rename this file to `pif.json` and move it inside `/data/adb` folder on your device using your favorite root explorer.
    - if you know how to use adb and shell commands:
      ```bash
      cp path_to_your_file /data/adb/
@@ -101,6 +146,8 @@ If you would like to take on the tedious task of finding each prop value and the
   - ro.product.build.fingerprint
 
 Then save your file like this:
+
+## File format
 
 ```json
 {

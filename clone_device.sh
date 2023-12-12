@@ -5,17 +5,15 @@
 
 # single file checkouts for inputed repo
 checkout() {
-  echo "### Try to get build.prop from system dirs ###"
-  echo
+  echo -e "\n# Try to get build.prop from system dirs"
   git checkout $br -- system/build.prop
   git checkout $br -- system/system/build.prop
-  echo
-  echo "### Try to get build.prop from system/product dirs ###"
-  echo
+
+  echo -e "\n# Try to get build.prop from system/product dirs"
   git checkout $br -- system/system/product/build.prop
   git checkout $br -- system/product/build.prop
-  echo
-  echo "### Try to get build.prop from vendor dirs ###"
+
+  echo -e "\n# Try to get build.prop from vendor dirs"
   echo
   git checkout $br -- vendor/build.prop 
   git checkout $br -- system/vendor/build.prop
@@ -25,7 +23,7 @@ checkout() {
 
 # rename and move files that are clones
 rename() {
-  echo Rename and move files...
+  echo -e "\n# Rename and move files..."
   if [ -f "system/product/build.prop" ]; then
     mv system/product/build.prop ./product-build.prop
   elif [ -f "system/system/product/build.prop" ]; then
@@ -66,15 +64,28 @@ echo -e "Script by Juleast @ https://github.com/juleast \
 
 # main script
 read -p "Paste repo URL here: " url
-IFS='/' read -r -a url_arr <<< "$url"
-IFS='.' read -r -a git_dir_arr <<< "${url_arr[-1]}"
-git_dir=${git_dir_arr[0]}
+if [ "$url" = ""  ]; then
+  echo -e "### No repo link was pasted! ### \n#"
+  echo -e "# Please Note!!"
+  echo -e "# Make sure you are pasting the proper URL" \
+  "\n# URL formats such as https://dumps.tadiphone.dev/dumps/asus/asus_i007_1.git"
+  echo -e "# Rerun program after copying the correct URL \n#"
+  return 1
+elif [[ $(echo $url | grep "https://") != "" ]] && [[ $(echo "$url" | grep ".git") != "" ]]; then
+  IFS='/' read -r -a url_arr <<< "$url"
+  IFS='.' read -r -a git_dir_arr <<< "${url_arr[-1]}"
+  git_dir=${git_dir_arr[0]}
 
-git clone --depth 1 --no-checkout --filter=blob:none ${url}
+  git clone --depth 1 --no-checkout --filter=blob:none ${url}
 
-cd ${git_dir[0]}
-branch_out=$(git branch)
-IFS=' ' read -r -a br_arr <<< "$branch_out"
-br=${br_arr[-1]}
+  cd ${git_dir[0]}
+  branch_out=$(git branch)
+  IFS=' ' read -r -a br_arr <<< "$branch_out"
+  br=${br_arr[-1]}
 
-checkout
+  checkout
+else
+  echo -e "Invalid URL!"
+  echo -e "Nope"
+  return 1
+fi
