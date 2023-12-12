@@ -85,7 +85,7 @@ elif [[ $(echo $url | grep "https://") != "" ]] && [[ $(echo "$url" | grep ".git
 
   checkout
 else
-  echo -e "Invalid URL!"
-  echo -e "Nope"
+  echo -e "# Invalid URL!"
+  echo -e "# Please rerun script and paste a valid git URL"
   return 1
 fi
