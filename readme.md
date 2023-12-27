@@ -124,26 +124,32 @@ If you would like to take on the tedious task of finding each prop value and the
   - ro.product.name
   - ro.product.system.name
   - ro.product.product.name
+  - ro.product.vendor.name
 - DEVICE:
   - ro.product.device
   - ro.product.system.device
-  - ro.product.product.name
+  - ro.product.product.device
+  - ro.product.vendor.device
 - MANUFACTURER:
   - ro.product.manufacturer
   - ro.product.system.manufacturer
   - ro.product.product.manufacturer
+  - ro.product.vendor.manufacturer
 - BRAND:
   - ro.product.brand
   - ro.product.system.brand
   - ro.product.product.brand
+  - ro.product.vendor.brand
 - MODEL:
   - ro.product.model
   - ro.product.system.model
   - ro.product.product.model
+  - ro.product.vendor.model
 - FINGERPRINT:
   - ro.build.fingerprint
   - ro.system.build.fingerprint
   - ro.product.build.fingerprint
+  - ro.product.vendor.fingerprint
 
 Then save your file like this:
 
