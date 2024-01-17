@@ -160,6 +160,9 @@ If you would like to take on the tedious task of finding each prop value and the
     - ro.system.build.version.sd
     - ro.vendor.build.version.sdk
     - ro.product.build.version.sdk
+- FORCE_BASIC_ATTESTATION:
+  - This property should only be added when the API level is greater than Nougat (25)
+  - ie. if FIRST_API_LEVEL=27 add FORCE_BASIC_ATTESTATION=true as last property of json.
 
 Then save your file like this:
 
