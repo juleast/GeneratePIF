@@ -59,12 +59,13 @@ This repo has scripts for generating custom PIF config files to use with PIF v14
      ./clone*
      ```
 
-3. The required files are cloned individually using `git checkout branch -- filename`. 
-    * We only need two files for `gen_pif_custom.sh` to generate the config file:
-      - `build.prop` file from `system` and `vendor` directories are cloned.
-      - For just in case, the `build.prop` from `system/product` is also cloned if available.
-      - Do not worry if the script outputs some errors. As long as the end result has at least 2 files, you are good.
-        - In rare cases I have seen the fingerprints generate just fine with only one file but this is not always the case. Make sure to check that the end result produces **ALL** json properties properly. Reference [File format](#file-format) section for more info.
+3. The required files are cloned individually using `git checkout branch -- filename`.
+
+   - We only need two files for `gen_pif_custom.sh` to generate the config file:
+     - `build.prop` file from `system` and `vendor` directories are cloned.
+     - For just in case, the `build.prop` from `system/product` is also cloned if available.
+     - Do not worry if the script outputs some errors. As long as the end result has at least 2 files, you are good.
+       - In rare cases I have seen the fingerprints generate just fine with only one file but this is not always the case. Make sure to check that the end result produces **ALL** json properties properly. Reference [File format](#file-format) section for more info.
 
 4. The script will then move and rename files appropriately for the second script to use in the **root** of the repo directory.
 
@@ -102,13 +103,13 @@ This repo has scripts for generating custom PIF config files to use with PIF v14
 
 8. <a name="step-8"></a>You will find your `custom.pif.json` file in the directory you chose in step 7.
 
-    - **For Termux users**, the home directory of Termux is usually hidden in the temp directory. Thus, what I advise is to copy the generated file before you close Termux to avoid confusions and not have to dig through your phone's file manager app.
-      - ie. If you cloned and generated a fingerprint for LG V35 (judyp), you will see a folder named `judyp`.
-      - Navigate to the directory and copy the file you generated
-        ```bash
-        cd judyp
-        cp custom.pif.json /sdcard/Downloads
-        ```
+   - **For Termux users**, the home directory of Termux is usually hidden in the temp directory. Thus, what I advise is to copy the generated file before you close Termux to avoid confusions and not have to dig through your phone's file manager app.
+     - ie. If you cloned and generated a fingerprint for LG V35 (judyp), you will see a folder named `judyp`.
+     - Navigate to the directory and copy the file you generated
+       ```bash
+       cd judyp
+       cp custom.pif.json /sdcard/Downloads
+       ```
 
 9. Rename this file to `pif.json` and move it inside `/data/adb` folder on your device using your favorite root explorer.
    - if you know how to use adb and shell commands:
@@ -177,7 +178,8 @@ Then save your file like this:
   "MODEL": "Pixel 2 XL",
   "FINGERPRINT": "google/taimen/taimen:8.1.0/OPM4.171019.021.R1/4833808:user/release-keys",
   "SECURITY_PATCH": "2018-07-05",
-  "FIRST_API_LEVEL": "26"
+  "FIRST_API_LEVEL": "26",
+  "FORCE_BASIC_ATTESTATION": true
 }
 ```
 
