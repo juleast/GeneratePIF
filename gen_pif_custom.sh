@@ -32,6 +32,7 @@ main() {
   BRAND=$(file_getprop build.prop ro.product.brand);
   MODEL=$(file_getprop build.prop ro.product.model);
   FINGERPRINT=$(file_getprop build.prop ro.build.fingerprint);
+  FORCE_BASIC_ATTESTATION="false"
 
   [ -z "$PRODUCT" ] && PRODUCT=$(file_getprop build.prop ro.product.system.name);
   [ -z "$DEVICE" ] && DEVICE=$(file_getprop build.prop ro.product.system.device);
@@ -97,6 +98,12 @@ main() {
     FIRST_API_LEVEL=32;
   fi;
   LIST="$LIST FIRST_API_LEVEL";
+  if [ "$FIRST_API_LEVEL" -gt 25 ]; then
+    item "First API level is Oreo or higher, adding FORCE_BASIC_ATTESTATION property..."
+    FORCE_BASIC_ATTESTATION="true"
+    LIST="$LIST FORCE_BASIC_ATTESTATION"
+  fi;
+  
 
   if [ -f custom.pif.$FORMAT ]; then
     item "Removing existing custom.pif.$FORMAT ...";
