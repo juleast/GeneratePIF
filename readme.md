@@ -4,7 +4,9 @@
 
 ### What is this?
 
-This repo has scripts for generating custom PIF config files to use with PIF v14 and dev versions.
+- ~~This repo has scripts for generating custom PIF config files to use with PIF v14 and dev versions.~~
+- This script is now compatible with later versions supporting the property, `FORCE_BASIC_ATTESTATION`.
+  - If you wish to still use older PIF modules with the generated files, just remove the property in the JSON file.
 
 ### How to use this?
 
@@ -14,8 +16,9 @@ This repo has scripts for generating custom PIF config files to use with PIF v14
   # Navigate to the cloned directory
   cd GeneratePIF
   ```
-- The script has two files. The first one is `clone_device.sh` and the second is `gen_pif_custom.sh` modified from [@osm0sis](https://github.com/osm0sis)' original `gen_pif_custom.sh`
-- **You need to copy a device repo from tadi's device dump (link in step 1) and paste it when prompted after running the first script.**
+- ~~The script has two files. The first one is `clone_device.sh` and the second is `gen_pif_custom.sh` modified from [@osm0sis](https://github.com/osm0sis)' original `gen_pif_custom.sh`~~
+  - The scripts has now been merged as one file as a CLI tool.
+- **You need to copy a device repo from tadi's device dump (link in step 1) and paste it when prompted when running in manual or short mode.**
   - Screenshot instructions --> [click here](https://imgur.com/a/dL88uHQ)
 
 ### Termux Users
@@ -29,95 +32,57 @@ This repo has scripts for generating custom PIF config files to use with PIF v14
     ```
 - If everything was updated and installed correctly, you can proceed to the main instructions as normal.
 
-### The structure
+### The Structure
 
-1. Skip running all the scripts individually by running `start.sh` file instead. Running them individually can still be useful if you just want to repeat regenerating the json files only.
+```bash
+$ start -h
+Usage: start [-m option] or [-s] or [-f file]
+ -m [clone, pif]     Manual generation. Select running one functionality at a time.
+                     Use the 'clone' option to only clone a repo.
+                     Use the 'pif' option to only generate a fingerprint json manually.
 
-   - Make `start.sh` exectuable and run
-     ```bash
-     chmod +x start.sh
-     # Run the script
-     ./start.sh
-     ```
+ -s                  Short version. Run the script with less hassle. Just have the repo
+                     link ready in your clipboard.
 
-   * You can skip to [step 8](#step-8) if you run `start.sh` file.
+ -f [file-path]      For bulk generation. It requires a text file with a list of device
+                     repo links separated by newlines.
 
-2. The first script clones a repo from a device repo link the user will provide from the dump repo: [https://dumps.tadiphone.dev/dumps/](https://dumps.tadiphone.dev/dumps/).
-   It initializes the git repo without checkout so that we don't have to download unnecessary files.
+ -h                  Prints this screen.
 
-   - Make sure the script is exectuable first:
+```
+- If you need an understanding of how this tool works, see [here](#how-does-this-tool-work).
+- #### Setup:
+  - Before running the tool, the `start` alias needs to be set to not make redundant `./` calls for running the tool.
+    - Run `setup.sh` before using the tool. The setup script also makes sure that `start` is executable.
+    - Make `setup.sh` executable and source it so that you can use the alias variable set inside the script.
+      ```bash
+      # Make setup script exectuable first
+      chmod +x setup.sh
+      # Run the setup
+      source setup.sh
+      ```
+- #### Manual Mode:
+  - Use the `-m` flag with options to run only part of the script.
+  - `start -m clone` to use only the repo clone function
+    - You will need to supply a repo link when prompted.
+  - `start -m pif` to generate a `custom.pif.json` file manually
+    - In this mode, you will have to select the directory manually.
+- #### Short mode:
+  - Use the `-s` flag to run short mode
+  - This mode is semi-automatic. It still prompts for a repo link but JSON file is generated without further interaction.
+- #### Bulk generation:
+  - Use the `-f` flag to use bulk generation with supplied file.
+  - Run the command as, `start -f repo_list.txt`
+  - The above command requires a text file to be supplied as argument after the `-f` flag.
+  - Example of repo_list.txt
+    ```
+    https://dumps.tadiphone.dev/dumps/asus/asus_i007_1.git
+    https://dumps.tadiphone.dev/dumps/cat/s62pro.git
+    https://dumps.tadiphone.dev/dumps/blackview/blackview.git
+    https://dumps.tadiphone.dev/dumps/blackview/bv9600.git
+    ```
 
-     ```bash
-     chmod +x clone_device.sh
-     # Then run
-     ./clone_device.sh
-
-     # Pro tip:
-     # If you are lazy you can always type the first couple of lines and
-     # add the '*' to search for the trailing letters/characters of the file
-     # name as long as no file has a similar name to the script
-     ./clone*
-     ```
-
-3. The required files are cloned individually using `git checkout branch -- filename`.
-
-   - We only need two files for `gen_pif_custom.sh` to generate the config file:
-     - `build.prop` file from `system` and `vendor` directories are cloned.
-     - For just in case, the `build.prop` from `system/product` is also cloned if available.
-     - Do not worry if the script outputs some errors. As long as the end result has at least 2 files, you are good.
-       - In rare cases I have seen the fingerprints generate just fine with only one file but this is not always the case. Make sure to check that the end result produces **ALL** json properties properly. Reference [File format](#file-format) section for more info.
-
-4. The script will then move and rename files appropriately for the second script to use in the **root** of the repo directory.
-
-5. Run the second script.
-
-   - Make sure the script is exectuable first:
-
-     ```bash
-     chmod +x gen_pif_custom.sh
-     # Then run
-     ./gen_pif.custom.sh
-
-     # Or use the shortened version
-     ./gen*
-     ```
-
-6. Running the second script will output a list of directories in the root of the script's directory for you to choose.
-
-   - You will see something like this:
-
-     ```bash
-     ### System build.prop to custom.pif.json/.prop creator ###
-     # by osm0sis @ xda-developers
-     # and modified by Juleast @ https://github.com/juleast
-     #
-     # Choose your cloned directory by referencing the number
-     # next to each directory name. (ignore .git or empty name directories)
-     1. .git
-     2. judyp
-
-     Enter number:
-     ```
-
-7. Inputting the number corresponding to the desired directory will navigate to it and work its magic.
-
-8. <a name="step-8"></a>You will find your `custom.pif.json` file in the directory you chose in step 7.
-
-   - **For Termux users**, the home directory of Termux is usually hidden in the temp directory. Thus, what I advise is to copy the generated file before you close Termux to avoid confusions and not have to dig through your phone's file manager app.
-     - ie. If you cloned and generated a fingerprint for LG V35 (judyp), you will see a folder named `judyp`.
-     - Navigate to the directory and copy the file you generated
-       ```bash
-       cd judyp
-       cp custom.pif.json /sdcard/Downloads
-       ```
-
-9. Rename this file to `pif.json` and move it inside `/data/adb` folder on your device using your favorite root explorer.
-   - if you know how to use adb and shell commands:
-     ```bash
-     cp path_to_your_file /data/adb/
-     ```
-
-#### For manual generation
+### For manual generation
 
 If you would like to take on the tedious task of finding each prop value and then copying it to your json file, here is a list of prop names that each json config property corresponds to:
 
@@ -167,7 +132,7 @@ If you would like to take on the tedious task of finding each prop value and the
 
 Then save your file like this:
 
-## File format
+### File format
 
 ```json
 {
@@ -179,12 +144,43 @@ Then save your file like this:
   "FINGERPRINT": "google/taimen/taimen:8.1.0/OPM4.171019.021.R1/4833808:user/release-keys",
   "SECURITY_PATCH": "2018-07-05",
   "FIRST_API_LEVEL": "26",
-  "FORCE_BASIC_ATTESTATION": true
+  "FORCE_BASIC_ATTESTATION": true // Only for newer PIF modules
 }
 ```
 
 \*Above fingerprint is already banned and is only an example.
 
-# Credits
+### How does this tool work?
+
+- The tool has two main functions inside:
+
+  - `clone_repo()`
+    - This function takes device repo link from [dump repo](https://dumps.tadiphone.dev/dumps).
+    - It will clone the repo without checkout to prevent unnecessary files from being downloaded.
+    - The required files are cloned individually using git checkout branch -- filename.
+    - `generate()` function only needs two files to generate the config file:
+      - `build.prop` file from system and vendor directories are cloned.
+    - As a fail-safe, the build.prop from system/product is also cloned if available.
+    - If you encounter any errors, you can check the output of the `git checkout` commands that were run in the `out.txt` file that will be inside each repo directory after cloning.
+  - `generate()`
+
+    - Based on the script by osm0sis' script on XDA.
+    - This is for generating the PIF JSON files.
+    - It takes `build.prop` files and parses it to generate a file named `custom.pif.json`.
+    - When using manual mode, a prompt to select your desired directory will show on screen.
+    - Below is an example prompt:
+
+      ```bash
+      $ start -m pif
+      # Choose your cloned directory by referencing the number next to
+      # each directory name. (do not select any empty name directories)
+      1. blackview
+      2. bv9600
+      3. s62pro
+
+      Enter number:
+      ```
+
+## Credits
 
 - [@osm0sis](https://github.com/osm0sis) for the `gen_pif_custom.sh` script on [xda](https://xdaforums.com/t/tools-zips-scripts-osm0sis-odds-and-ends-multiple-devices-platforms.2239421/post-89173470)
