@@ -4,8 +4,15 @@
 # The generate() function segment is based on gen_pif_custom.sh by osm0sis @ xda-developers
 
 # Remember original path
-og_path=$(pwd)
+og_path="$(pwd)"
 
+# Error message function
+dead() {
+  echo -e "\nProgram ended prematurely due to the following error:\n$@"
+  exit 1
+}
+
+# Easter egg
 megamind() {
   local message="$1"
   echo -e "———————————${message}?———————————"
@@ -25,13 +32,20 @@ megamind() {
   echo -e "—————————————————————————————"
 }
 
+# Main pif file generator function
 generate() {
   item() { echo -e "\n- $@"; }
   die() { 
     echo -e "\n\n! $@"
-    exit 1
+    if $short || $manual; then
+      exit 1
+    else
+      return 1
+    fi  
   }
-  file_getprop() { grep "^$2=" "$1" 2>/dev/null | tail -n1 | cut -d= -f2-; }
+  file_getprop() {
+    grep "^$2=" "$1" 2>/dev/null | tail -n1 | cut -d= -f2-
+  }
 
   main() {
     case $1 in
@@ -124,42 +138,49 @@ generate() {
     fi;
     
 
-    if [ -f custom.pif.$FORMAT ]; then
-      item "Removing existing custom.pif.$FORMAT ...";
-      rm -f custom.pif.$FORMAT;
+    if [ -f "$LOCAL"pif.$FORMAT ]; then
+      item "Removing existing custom pif.$FORMAT ...";
+      rm -f "$LOCAL"pif.$FORMAT;
     fi;
 
-    item "Writing new custom.pif.$FORMAT ...";
-    [ "$FORMAT" == "json" ] && echo '{' | tee -a custom.pif.json;
+    item "Writing new custom pif.$FORMAT ...";
+    [ "$FORMAT" == "json" ] && echo '{' | tee -a "$LOCAL"pif.json;
     for PROP in $LIST; do
       case $FORMAT in
         json) eval echo '\ \ \"$PROP\": \"'\$$PROP'\",';;
         prop) eval echo $PROP=\$$PROP;;
       esac;
-    done | sed '$s/,//' | tee -a custom.pif.$FORMAT;
-    [ "$FORMAT" == "json" ] && echo '}' | tee -a custom.pif.json;
+    done | sed '$s/,//' | tee -a "$LOCAL"pif.$FORMAT;
+    [ "$FORMAT" == "json" ] && echo '}' | tee -a "$LOCAL"pif.json;
 
-    echo
+    if [ -e "/system/build.prop" && $short ]; then
+      echo -e "Detected Android as terminal environment."
+      if [ !(command -v su) &> /dev/null ]; then
+        echo -e "No su binary detected!"
+        echo -e "Are you sure there is superuser access?"
+        echo -e "To copy your result file, run short mode again after"
+        echo -e "granting superuser access to your terminal."
+        dead "No su binary."
+      else
+        echo -e "Backing up current pif.json file and copying new one..."
+        su -c mv /data/adb/pif.json /data/adb/bak.pif.json
+        su -c cp "$LOCAL"pif.json /data/adb/pif.json
+        echo -e "Killing gms service..."
+        su -c killall com.android.google.gms.unstable
+      fi
+
     echo "Done!"
     cd ../
   }
 
   manual_gen() {
-    case $0 in
-      *.sh)
-          shdir="$0"
-          ;;
-        *)
-          shdir="$(lsof -p $$ 2>/dev/null | grep -o '/.*gen_pif_custom.sh$')"
-          ;;
-    esac
-    shdir=$(dirname "$(readlink -f "$shdir")")
-
     echo -e "# Choose your cloned directory by referencing the number next to\
       \n# each directory name. (do not select any empty name directories)";
+
     dir_arr=("no")
     readarray -t temp_arr < <(ls -F | grep "/$" | cut -d'/' -f1)
     dir_arr+=(${temp_arr[@]})
+
     for ((a = 1 ; a < ${#dir_arr[@]} ; a++)); do
       echo "${a}. ${dir_arr[$a]}"
     done
@@ -168,8 +189,8 @@ generate() {
     read -p "Enter number: " arr_index
     if [[ "$arr_index" =~ ^+[0-9]+$ ]]; then
       if [ "$arr_index" -gt "${#dir_arr[@]}" ] || [ "$arr_index" -lt 0 ]; then
-        echo "Invalid index!"
-        echo "Exiting..."
+        echo -e "Invalid index!"
+        echo -e "Exiting..."
         exit 1
       else
         cd $shdir
@@ -178,6 +199,7 @@ generate() {
       fi
     else
       echo "Not a number!"
+      exit 1
     fi
     
   }
@@ -189,9 +211,11 @@ generate() {
   fi
 }
 
+# Main function to clone device repo
 clone_repo() {
+  # Take repo link as input beforehand
   local input="$1"
-  # single file checkouts for inputed repo
+  # Single file checkouts for inputed repo
   checkout() {
     echo -e "\n# Try to get build.prop from system dirs"
     git checkout $br -- system/build.prop
@@ -208,8 +232,7 @@ clone_repo() {
 
     rename
   }
-
-  # rename and move files that are clones
+  # Rename and move files that are clones
   rename() {
     echo -e "\n# Rename and move files..."
     if [ -f "system/product/build.prop" ]; then
@@ -233,8 +256,7 @@ clone_repo() {
 
     delete
   }
-
-  # delete empty folders when finished
+  # Delete empty folders when finished
   delete() {
     if [ -d "system" ]; then
     rm -rf system
@@ -247,17 +269,24 @@ clone_repo() {
       cd ../
     fi
   }
-  # main code for cloning
+  # Main code for cloning
+  # Check for modes
   if $file; then
     url=$input
   elif $short || $manual; then
-    read -p "Paste repo URL here: " url
+    read -p "Paste repo URL here (or press Ctrl+C to stop): " url
   else
     megamind "No arguments"
-    return 1
+    exit 1
   fi
   
+  # Check for proper URLs
   if [ "$url" = ""  ]; then
+    if $file; then
+      echo -e "!!! Repo link missing !!!"
+      echo -e "Skipping..."
+      return 1
+    fi
     megamind "No repo link"
     echo -e "# Please Note!!"
     echo -e "# Make sure you are pasting the proper URL" \
@@ -268,13 +297,13 @@ clone_repo() {
     IFS='/' read -r -a url_arr <<< "$url"
     IFS='.' read -r -a git_dir_arr <<< "${url_arr[-1]}"
     git_dir=${git_dir_arr[0]}
-
+    # This is to suppress git screaming 'fatal directory not empty'
     if [ -d "${git_dir[0]}" ]; then
       echo "Directory already exists. Skipping clone..."
     else
       git clone --depth 1 --no-checkout --filter=blob:none ${url}
     fi
-
+    # Navigate to cloned directory
     cd ${git_dir[0]}
     branch_out=$(git branch)
     IFS=' ' read -r -a br_arr <<< "$branch_out"
@@ -289,6 +318,7 @@ clone_repo() {
   fi
 }
 
+# Function to print usage help message
 usage() {
   local usage_only="$1"
   if [ "$usage_only" = "yes" ]; then
@@ -298,7 +328,10 @@ usage() {
     echo -e "See 'start -h' for help"
   fi
 }
+# Navigate to current shell path just in case
+cd $og_path
 
+# Flag functions for each option
 manual="false"
 short="false"
 file="false"
@@ -306,6 +339,7 @@ help="false"
 flag=""
 flag_count=0
 
+# The code to take flag input when running the script
 while getopts 'm:sf:h' OPT; do
   case "$OPT" in
     m)
@@ -345,12 +379,14 @@ while getopts 'm:sf:h' OPT; do
 done
 shift $((OPTIND-1))
 
+# Prevent multiple flag inputs
 if [ "$flag_count" -gt 1 ]; then
   echo -e "Error: Multiple mutually exclusive flags cannot be used simultaneously.\n"
   usage
   exit 1
 fi
 
+# The centralized block of code that brings it all together
 case $flag in
   m)
     if [ "$mode" = "pif" ]; then
@@ -393,8 +429,9 @@ case $flag in
     ;;
   *)
     if [ "$flag" = "" ]; then
-    echo -e "Error: Make sure at least one argument is passed and that your argument is not more than one.\n"
-    usage
+      echo -e "Error: Make sure at least one argument is passed and that your argument is not more than one.\n"
+      usage
+      exit 1
     else
       usage
       exit 1

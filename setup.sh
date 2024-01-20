@@ -1,3 +1,3 @@
 #!/bin/bash
 chmod +x start
-alias start=./start
+alias start="$(pwd)/start"

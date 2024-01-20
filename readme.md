@@ -18,12 +18,15 @@
   ```
 - ~~The script has two files. The first one is `clone_device.sh` and the second is `gen_pif_custom.sh` modified from [@osm0sis](https://github.com/osm0sis)' original `gen_pif_custom.sh`~~
   - The scripts has now been merged as one file as a CLI tool.
-- **You need to copy a device repo from tadi's device dump (link in step 1) and paste it when prompted when running in manual or short mode.**
+- **You need to copy a device repo from tadi's device dump [here](https://dumps.tadiphone.dev/dumps) and paste it when prompted when running in manual or short mode.**
   - Screenshot instructions --> [click here](https://imgur.com/a/dL88uHQ)
 
 ### Termux Users
 
 - For those who want to use the Termux app to run these scripts on your phone, make sure you have the latest F-Droid release. Get it [here](https://f-droid.org/repo/com.termux_118.apk).
+- Make sure you allow superuser access to Termux. 
+  - **This does not mean you should be running the tool in `su`!**
+  - As long as you have allowed superuser access, the tool will do the rest.
 - In order to run the script properly on Termux, `git` needs to be properly installed:
   - First update the package mirrors then install git:
     ```bash
@@ -65,11 +68,19 @@ Usage: start [-m option] or [-s] or [-f file]
   - Use the `-m` flag with options to run only part of the script.
   - `start -m clone` to use only the repo clone function
     - You will need to supply a repo link when prompted.
-  - `start -m pif` to generate a `custom.pif.json` file manually
+  - `start -m pif` to generate a `pif.json` file manually
     - In this mode, you will have to select the directory manually.
+    - After generation, manually copy the file either from terminal or using adb depending on your terminal environment.
+      ```bash
+      # From android terminal environment
+      su -c cp device_folder/pif.json /data/adb/
+      # From adb
+      adb push device_folder/pif.json /data/adb/
+      ```
 - #### Short mode:
   - Use the `-s` flag to run short mode
   - This mode is semi-automatic. It still prompts for a repo link but JSON file is generated without further interaction.
+  - Additionally, if the script detects it is running in an Android environment, it will take a backup of any current `pif.json` file inside `/data/adb/` and then copy the generated `pif.json` file to `/data/adb`. GMS unstable service will also be killed allowing you to test without a reboot.
 - #### Bulk generation:
   - Use the `-f` flag to use bulk generation with supplied file.
   - Run the command as, `start -f repo_list.txt`
@@ -116,7 +127,7 @@ If you would like to take on the tedious task of finding each prop value and the
   - ro.system.build.fingerprint
   - ro.product.build.fingerprint
   - ro.product.vendor.fingerprint
-- FIRST_API_LEVEL (The first two items are what are looked for if not found, try finding the fallback values):
+- FIRST_API_LEVEL (The first two items are what are looked for. If not found, try finding the fallback values):
   - ro.board.first_api_level
   - ro.board.api_level
   - **Fallback values**:
@@ -127,8 +138,9 @@ If you would like to take on the tedious task of finding each prop value and the
     - ro.vendor.build.version.sdk
     - ro.product.build.version.sdk
 - FORCE_BASIC_ATTESTATION:
-  - This property should only be added when the API level is greater than Nougat (25)
-  - ie. if FIRST_API_LEVEL=27 add FORCE_BASIC_ATTESTATION=true as last property of json.
+  - This property only works with V15.0 or later versions of PIF module.
+  - This property should only be added when the API level is greater than Nougat (25).
+  - ie. if FIRST_API_LEVEL=27 add FORCE_BASIC_ATTESTATION=true as last property of JSON file.
 
 Then save your file like this:
 
@@ -181,6 +193,9 @@ Then save your file like this:
       Enter number:
       ```
 
-## Credits
+## Credits and other info
 
-- [@osm0sis](https://github.com/osm0sis) for the `gen_pif_custom.sh` script on [xda](https://xdaforums.com/t/tools-zips-scripts-osm0sis-odds-and-ends-multiple-devices-platforms.2239421/post-89173470)
+- Thanks to [@osm0sis](https://github.com/osm0sis) for the `gen_pif_custom.sh` script on [xda](https://xdaforums.com/t/tools-zips-scripts-osm0sis-odds-and-ends-multiple-devices-platforms.2239421/post-89173470).
+- Feel free to submit any issues [here](https://github.com/juleast/GeneratePIF/issues/new).
+- Contact me on Telegram for any support [@Juleast](https://t.me/Juleast) (Just please do not spam)
+- Support of the project with donations are welcome! [Buy me a coffee!](https://www.buymeacoffee.com/juleast)
