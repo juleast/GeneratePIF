@@ -155,7 +155,7 @@ generate() {
 
     if [ -e "/system/build.prop" && $short ]; then
       echo -e "Detected Android as terminal environment."
-      if [ !(command -v su) &> /dev/null ]; then
+      if [ ! command -v su &> /dev/null ]; then
         echo -e "No su binary detected!"
         echo -e "Are you sure there is superuser access?"
         echo -e "To copy your result file, run short mode again after"
@@ -168,7 +168,7 @@ generate() {
         echo -e "Killing gms service..."
         su -c killall com.android.google.gms.unstable
       fi
-
+    fi
     echo "Done!"
     cd ../
   }
