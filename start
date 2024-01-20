@@ -186,8 +186,8 @@ generate() {
         echo -e "Backing up current pif.json file and copying new one..."
         su -c mv /data/adb/pif.json /data/adb/bak.pif.json
         su -c cp "$LOCAL"pif.json /data/adb/pif.json
-        echo -e "Killing gms service..."
-        su -c killall com.google.android.gms.unstable
+        #echo -e "Killing gms service..."
+        #su -c killall com.google.android.gms.unstable
       fi
     fi
     echo "Done!"
@@ -195,26 +195,28 @@ generate() {
   }
 
   manual_gen() {
-    echo -e "# Choose your cloned directory by referencing the number next to\
-      \n# each directory name. (do not select any empty name directories)";
-
     dir_arr=("no")
     readarray -t temp_arr < <(ls -F | grep "/$" | cut -d'/' -f1)
     dir_arr+=(${temp_arr[@]})
-
+    if [ "${#dir_arr[@]}" -lt 2 ]; then
+      echo -e "No directories found. Did you clone a repo first?"
+      exit 1
+    fi
+    echo -e "# Choose your cloned directory by referencing the number next to\
+      \n# each directory name. (do not select any empty name directories)";
     for ((a = 1 ; a < ${#dir_arr[@]} ; a++)); do
       echo "${a}. ${dir_arr[$a]}"
     done
 
     echo ""
     read -p "Enter number: " arr_index
-    if [[ "$arr_index" =~ ^+[0-9]+$ ]]; then
+    int="^[0-9]+$"
+    if [[ "$arr_index" =~ $int ]]; then
       if [ "$arr_index" -gt "${#dir_arr[@]}" ] || [ "$arr_index" -lt 0 ]; then
         echo -e "Invalid index!"
         echo -e "Exiting..."
         exit 1
       else
-        cd $shdir
         cd ${dir_arr[$arr_index]}
         main
       fi

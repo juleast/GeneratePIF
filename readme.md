@@ -80,7 +80,7 @@ Usage: start [-m option] or [-s] or [-f file]
 - #### Short mode:
   - Use the `-s` flag to run short mode
   - This mode is semi-automatic. It still prompts for a repo link but JSON file is generated without further interaction.
-  - Additionally, if the script detects it is running in an Android environment, it will take a backup of any current `pif.json` file inside `/data/adb/` and then copy the generated `pif.json` file to `/data/adb`. GMS unstable service will also be killed allowing you to test without a reboot.
+  - Additionally, if the script detects it is running in an Android environment, it will take a backup of any current `pif.json` file inside `/data/adb/` and then copy the generated `pif.json` file to `/data/adb`. ~~GMS unstable service will also be killed allowing you to test without a reboot.~~ (currently killing GMS service not possible do it manually)
 - #### Bulk generation:
   - Use the `-f` flag to use bulk generation with supplied file.
   - Run the command as, `start -f repo_list.txt`
