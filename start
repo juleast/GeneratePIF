@@ -48,6 +48,25 @@ generate() {
   }
 
   main() {
+    if [ -d "$1" ]; then
+      DIR="$1/dummy";
+      LOCAL="$(readlink -f "$PWD")";
+      shift;
+    else
+      case "$0" in
+        *.sh) DIR="$0";;
+          *) DIR="$(lsof -p $$ 2>/dev/null | grep -o '/.*gen_pif_custom.sh$')";;
+      esac;
+    fi;
+    DIR=$(dirname "$(readlink -f "$DIR")");
+    if [ "$LOCAL" ]; then
+      item "Using prop directory: $DIR";
+      item "Using output directory: $LOCAL";
+      LOCAL="$LOCAL/";
+    fi;
+    echo $DIR
+    cd "$DIR";
+
     case $1 in
     json|prop) FORMAT=$1;;
     "") FORMAT=json;;
