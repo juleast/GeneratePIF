@@ -339,6 +339,13 @@ help="false"
 flag=""
 flag_count=0
 
+line_break=""
+read -r lines cols < <(stty size)
+# Check terminal length
+if [ "$cols" -lt 100 ]; then
+  line_break="\n                     "
+fi
+
 # The code to take flag input when running the script
 while getopts 'm:sf:h' OPT; do
   case "$OPT" in
@@ -418,12 +425,12 @@ case $flag in
     ;;
   h)
     usage "yes"
-    echo -e " -m [clone, pif]     Manual generation. Select running one functionality at a time."
-    echo -e "                     Use the 'clone' option to only clone a repo."
-    echo -e "                     Use the 'pif' option to only generate a fingerprint json manually.\n"
-    echo -e " -s                  Short version. Run the script with less hassle. Just have the repo"
+    echo -e " -m [clone, pif]     Manual generation. Select running ${line_break}one functionality at a time.\n"
+    echo -e "                     Use the 'clone' option to only ${line_break}clone a repo.\n"
+    echo -e "                     Use the 'pif' option to only ${line_break}generate a fingerprint json manually.\n"
+    echo -e " -s                  Short version. Run the script with ${line_break}less hassle. Just have the repo"
     echo -e "                     link ready in your clipboard.\n"
-    echo -e " -f [file-path]      For bulk generation. It requires a text file with a list of device"
+    echo -e " -f [file-path]      For bulk generation. It requires a ${line_break}text file with a list of device"
     echo -e "                     repo links separated by newlines.\n"
     echo -e " -h                  Prints this screen.\n"
     ;;
