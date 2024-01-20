@@ -115,7 +115,9 @@ generate() {
     [ -z "$FIRST_API_LEVEL" ] && FIRST_API_LEVEL=$(file_getprop vendor-build.prop ro.board.api_level);
 
     if [ -z "$FIRST_API_LEVEL" ]; then
-      [ ! -f vendor-build.prop ] && die "No first API level found, add vendor-build.prop";
+      if [ ! -f vendor-build.prop ]; then
+        echo -e "No vendor-build.prop file found. Falling back to build.prop ...";
+      fi
       item "No first API level found, falling back to build SDK version ...";
       [ -z "$FIRST_API_LEVEL" ] && FIRST_API_LEVEL=$(file_getprop build.prop ro.build.version.sdk);
       [ -z "$FIRST_API_LEVEL" ] && FIRST_API_LEVEL=$(file_getprop build.prop ro.system.build.version.sdk);
@@ -153,7 +155,7 @@ generate() {
     done | sed '$s/,//' | tee -a "$LOCAL"pif.$FORMAT;
     [ "$FORMAT" == "json" ] && echo '}' | tee -a "$LOCAL"pif.json;
 
-    if [ -e "/system/build.prop" && $short ]; then
+    if [ -e "/system/build.prop" ] && $short; then
       echo -e "Detected Android as terminal environment."
       if [ ! command -v su &> /dev/null ]; then
         echo -e "No su binary detected!"
@@ -166,7 +168,7 @@ generate() {
         su -c mv /data/adb/pif.json /data/adb/bak.pif.json
         su -c cp "$LOCAL"pif.json /data/adb/pif.json
         echo -e "Killing gms service..."
-        su -c killall com.android.google.gms.unstable
+        su -c killall com.google.android.gms.unstable
       fi
     fi
     echo "Done!"
