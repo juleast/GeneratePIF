@@ -427,7 +427,7 @@ case $flag in
     usage "yes"
     echo -e " -m [clone, pif]     Manual generation. Select running ${line_break}one functionality at a time.\n"
     echo -e "                     Use the 'clone' option to only ${line_break}clone a repo.\n"
-    echo -e "                     Use the 'pif' option to only ${line_break}generate a fingerprint json manually.\n"
+    echo -e "                     Use the 'pif' option to only ${line_break}generate a fingerprint manually.\n"
     echo -e " -s                  Short version. Run the script with ${line_break}less hassle. Just have the repo"
     echo -e "                     link ready in your clipboard.\n"
     echo -e " -f [file-path]      For bulk generation. It requires a ${line_break}text file with a list of device"
