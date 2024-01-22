@@ -241,17 +241,18 @@ clone_repo() {
   # Single file checkouts for inputed repo
   checkout() {
     echo -e "\n# Try to get build.prop from system dirs"
-    git checkout $br -- system/build.prop
-    git checkout $br -- system/system/build.prop
+    git checkout "$br" -- system/build.prop
+    git checkout "$br" -- system/system/build.prop
 
     echo -e "\n# Try to get build.prop from system/product dirs"
-    git checkout $br -- system/system/product/build.prop
-    git checkout $br -- system/product/build.prop
+    git checkout "$br" -- system/system/product/build.prop
+    git checkout "$br" -- system/product/build.prop
+    git checkout "$br" -- product/etc/build.prop
 
     echo -e "\n# Try to get build.prop from vendor dirs"
     echo
-    git checkout $br -- vendor/build.prop 
-    git checkout $br -- system/vendor/build.prop
+    git checkout "$br" -- vendor/build.prop 
+    git checkout "$br" -- system/vendor/build.prop
 
     rename
   }
@@ -262,12 +263,14 @@ clone_repo() {
       mv system/product/build.prop ./product-build.prop
     elif [ -f "system/system/product/build.prop" ]; then
       mv system/system/product/build.prop ./product-build.prop
+    elif [ -f "product/etc/build.prop" ]; then
+      mv product/etc/build.prop ./product-build.prop
     fi
 
     if [ -f "system/build.prop" ]; then
-      mv system/build.prop ./
+      mv system/build.prop ./build.prop
     elif [ -f "system/system/build.prop" ]; then
-      mv system/system/build.prop ./
+      mv system/system/build.prop ./system-build.prop
     fi
 
     if [ -f "system/vendor/build.prop" ]; then
@@ -281,8 +284,11 @@ clone_repo() {
   }
   # Delete empty folders when finished
   delete() {
+    if [ -d "product" ]; then
+      rm -rf product
+    fi
     if [ -d "system" ]; then
-    rm -rf system
+      rm -rf system
     fi
     if [ -d "vendor" ]; then
       rm -rf vendor
@@ -385,6 +391,11 @@ while getopts 'm:sf:h' OPT; do
     s)
       short="true"
       flag="$OPT"
+      if [ "$2" != "" ]; then
+        echo -e "Error: No arguments can be supplied for short mode"
+        usage
+        exit 1
+      fi
       ;;
     f)
       file="true"
