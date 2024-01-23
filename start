@@ -379,35 +379,41 @@ fi
 while getopts 'm:sf:h' OPT; do
   case "$OPT" in
     m)
-      manual="true"
-      flag="$OPT"
-      mode=${OPTARG}
       if [ "$3" != "" ]; then
         echo -e "Error: More than one mode supplied."
         usage
         exit 1
       fi
+      manual="true"
+      flag="$OPT"
+      mode=${OPTARG}
       ;;
     s)
-      short="true"
-      flag="$OPT"
       if [ "$2" != "" ]; then
         echo -e "Error: No arguments can be supplied for short mode"
         usage
         exit 1
       fi
+      short="true"
+      flag="$OPT"
       ;;
     f)
-      file="true"
-      flag="$OPT"
-      filename=${OPTARG}
       if [ "$3" != "" ]; then
         echo -e "Error: More than one file supplied."
         usage
         exit 1
       fi
+      file="true"
+      flag="$OPT"
+      filename=${OPTARG}
       ;;
     h)
+      if [ "$2" != "" ]; then
+        megamind "No brain"
+        echo -e "Error: Illegal option."
+        usage
+        exit 1
+      fi
       help="true"
       flag="$OPT"
       

@@ -1,1 +1,7 @@
-.json
+# Ignore everything
+/*
+
+# Only include these
+!/readme.md
+!/start
+!/setup.sh
