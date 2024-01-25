@@ -270,7 +270,7 @@ clone_repo() {
     if [ -f "system/build.prop" ]; then
       mv system/build.prop ./build.prop
     elif [ -f "system/system/build.prop" ]; then
-      mv system/system/build.prop ./system-build.prop
+      mv system/system/build.prop ./build.prop
     fi
 
     if [ -f "system/vendor/build.prop" ]; then
