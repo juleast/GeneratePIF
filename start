@@ -94,7 +94,10 @@ generate() {
     [ -z "$FINGERPRINT" ] && FINGERPRINT=$(file_getprop build.prop ro.system.build.fingerprint);
 
     case $DEVICE in
-      generic) die "Generic /system/build.prop values found, rename to system-build.prop and add product-build.prop";;
+      generic)
+        echo -e "Generic /system/build.prop values found, using values from product-build.prop..."
+        DEVICE=""
+        ;;
     esac;
 
     [ -z "$PRODUCT" ] && PRODUCT=$(file_getprop product-build.prop ro.product.product.name);
@@ -269,7 +272,8 @@ clone_repo() {
 
     if [ -f "system/build.prop" ]; then
       mv system/build.prop ./build.prop
-    elif [ -f "system/system/build.prop" ]; then
+    fi
+    if [ -f "system/system/build.prop" ]; then
       mv system/system/build.prop ./system-build.prop
     fi
 
