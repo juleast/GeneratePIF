@@ -4,8 +4,8 @@
 
 ### What is this?
 
-- ~~This repo has scripts for generating custom PIF config files to use with PIF v14 and dev versions.~~
-- This script is now compatible with later versions supporting the property, `FORCE_BASIC_ATTESTATION`.
+- An all in one script that has functions to clone the repo of a device from tadi's phone dump and also generate a fingerprint compatible with Play Integrity Fix Modules v15 and up.
+- The propery `FORCE_BASIC_ATTESTATION` is only supported by module versions `v15.x`.
   - If you wish to still use older PIF modules with the generated files, just remove the property in the JSON file.
 
 ### How to use this?
@@ -16,8 +16,7 @@
   # Navigate to the cloned directory
   cd GeneratePIF
   ```
-- ~~The script has two files. The first one is `clone_device.sh` and the second is `gen_pif_custom.sh` modified from [@osm0sis](https://github.com/osm0sis)' original `gen_pif_custom.sh`~~
-  - The scripts has now been merged as one file as a CLI tool.
+- Then follow the instructions in the later sections or refer to help menu.
 - **You need to copy a device repo from tadi's device dump [here](https://dumps.tadiphone.dev/dumps) and paste it when prompted when running in manual or short mode.**
   - Screenshot instructions --> [click here](https://imgur.com/a/dL88uHQ)
 
@@ -80,7 +79,11 @@ Usage: start [-m option] or [-s] or [-f file]
 - #### Short mode:
   - Use the `-s` flag to run short mode
   - This mode is semi-automatic. It still prompts for a repo link but JSON file is generated without further interaction.
-  - Additionally, if the script detects it is running in an Android environment, it will take a backup of any current `pif.json` file inside `/data/adb/` and then copy the generated `pif.json` file to `/data/adb`. ~~GMS unstable service will also be killed allowing you to test without a reboot.~~ (currently killing GMS service not possible do it manually)
+  - Additionally, if the script detects it is running in an Android environment, it will take a backup of any current `pif.json` file inside `/data/adb/` and then copy the generated `pif.json` file to `/data/adb`.
+  - You then need to manually kill GMS service to test your fingerprint with:
+    ```bash
+    su -c killall com.google.android.gms.unstable
+    ```
 - #### Bulk generation:
   - Use the `-f` flag to use bulk generation with supplied file.
   - Run the command as, `start -f repo_list.txt`
@@ -169,7 +172,7 @@ Then save your file like this:
   - `clone_repo()`
     - This function takes device repo link from [dump repo](https://dumps.tadiphone.dev/dumps).
     - It will clone the repo without checkout to prevent unnecessary files from being downloaded.
-    - The required files are cloned individually using git checkout branch -- filename.
+    - The required files are cloned individually using `git checkout (branch name) -- filename`.
     - `generate()` function only needs two files to generate the config file:
       - `build.prop` file from system and vendor directories are cloned.
     - As a fail-safe, the build.prop from system/product is also cloned if available.

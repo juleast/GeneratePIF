@@ -189,8 +189,8 @@ generate() {
         echo -e "Backing up current pif.json file and copying new one..."
         su -c mv /data/adb/pif.json /data/adb/bak.pif.json
         su -c cp "$LOCAL"pif.json /data/adb/pif.json
-        #echo -e "Killing gms service..."
-        #su -c killall com.google.android.gms.unstable
+        echo "!!! Make sure to kill GMS service to test your fingerprint. !!!"
+        echo -e "Copy and paste this command: su -c killall com.google.android.gms.unstable\n"
       fi
     fi
     echo "Done!"
