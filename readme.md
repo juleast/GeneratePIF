@@ -175,7 +175,7 @@ Then save your file like this:
     - The required files are cloned individually using `git checkout (branch name) -- filename`.
     - `generate()` function only needs two files to generate the config file:
       - `build.prop` file from system and vendor directories are cloned.
-    - As a fail-safe, the build.prop from system/product is also cloned if available.
+    - As a fail-safe, the `build.prop` from system/product is also cloned if available.
     - If you encounter any errors, you can check the output of the `git checkout` commands that were run in the `out.txt` file that will be inside each repo directory after cloning.
   - `generate()`
 
