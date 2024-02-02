@@ -41,7 +41,7 @@ generate() {
       exit 1
     else
       return 1
-    fi  
+    fi
   }
   file_getprop() {
     grep "^$2=" "$1" 2>/dev/null | tail -n1 | cut -d= -f2-
@@ -106,6 +106,13 @@ generate() {
     [ -z "$BRAND" ] && BRAND=$(file_getprop product-build.prop ro.product.product.brand);
     [ -z "$MODEL" ] && MODEL=$(file_getprop product-build.prop ro.product.product.model);
     [ -z "$FINGERPRINT" ] && FINGERPRINT=$(file_getprop product-build.prop ro.product.build.fingerprint);
+
+    [ -z "$PRODUCT" ] && PRODUCT=$(file_getprop system-build.prop ro.product.system.name);
+    [ -z "$DEVICE" ] && DEVICE=$(file_getprop system-build.prop ro.product.system.device);
+    [ -z "$MANUFACTURER" ] && MANUFACTURER=$(file_getprop system-build.prop ro.product.system.manufacturer);
+    [ -z "$BRAND" ] && BRAND=$(file_getprop system-build.prop ro.product.system.brand);
+    [ -z "$MODEL" ] && MODEL=$(file_getprop system-build.prop ro.product.system.model);
+    [ -z "$FINGERPRINT" ] && FINGERPRINT=$(file_getprop system-build.prop ro.system.build.fingerprint);
 
     if [ -z "$FINGERPRINT" ]; then
       if [ -f build.prop ]; then
