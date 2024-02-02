@@ -5,7 +5,7 @@
 ### What is this?
 
 - An all in one script that has functions to clone the repo of a device from tadi's phone dump and also generate a fingerprint compatible with Play Integrity Fix Modules v15 and up.
-- The propery `FORCE_BASIC_ATTESTATION` is only supported by module versions `v15.x`.
+- The property `FORCE_BASIC_ATTESTATION` is only supported by module versions `v15.x`.
   - If you wish to still use older PIF modules with the generated files, just remove the property in the JSON file.
 
 ### How to use this?
