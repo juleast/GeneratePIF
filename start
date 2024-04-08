@@ -35,7 +35,7 @@ megamind() {
 # Main pif file generator function
 generate() {
   item() { echo -e "\n- $@"; }
-  die() { 
+  die() {
     echo -e "\n\n! $@"
     if $short || $manual; then
       exit 1
@@ -167,7 +167,7 @@ generate() {
       FORCE_BASIC_ATTESTATION="true"
       LIST="$LIST FORCE_BASIC_ATTESTATION"
     fi;
-    
+
 
     if [ -f "$LOCAL"pif.$FORMAT ]; then
       item "Removing existing custom pif.$FORMAT ...";
@@ -234,7 +234,7 @@ generate() {
       echo "Not a number!"
       exit 1
     fi
-    
+
   }
 
   if $manual; then
@@ -261,7 +261,7 @@ clone_repo() {
 
     echo -e "\n# Try to get build.prop from vendor dirs"
     echo
-    git checkout "$br" -- vendor/build.prop 
+    git checkout "$br" -- vendor/build.prop
     git checkout "$br" -- system/vendor/build.prop
 
     rename
@@ -319,7 +319,7 @@ clone_repo() {
     megamind "No arguments"
     exit 1
   fi
-  
+
   # Check for proper URLs
   if [ "$url" = ""  ]; then
     if $file; then
@@ -335,8 +335,9 @@ clone_repo() {
     exit 1
   elif [[ $(echo "$url" | grep "https://") != "" ]] && [[ $(echo "$url" | grep ".git") != "" ]]; then
     IFS='/' read -r -a url_arr <<< "$url"
-    IFS='.' read -r -a git_dir_arr <<< "${url_arr[-1]}"
-    git_dir=${git_dir_arr[0]}
+    last_index=$(( ${#url_arr[@]} - 1 ))
+    last_part="${url_arr[last_index]}"
+    git_dir=(${last_part//.git/})
     # This is to suppress git screaming 'fatal directory not empty'
     if [ -d "${git_dir[0]}" ]; then
       echo "Directory already exists. Skipping clone..."
@@ -345,9 +346,7 @@ clone_repo() {
     fi
     # Navigate to cloned directory
     cd ${git_dir[0]}
-    branch_out=$(git branch)
-    IFS=' ' read -r -a br_arr <<< "$branch_out"
-    br=${br_arr[-1]}
+    br=$(git rev-parse --abbrev-ref HEAD)
 
     # Checkout with outputs suppressed to a output file
     checkout &> out.txt
@@ -427,7 +426,7 @@ while getopts 'm:sf:h' OPT; do
       fi
       help="true"
       flag="$OPT"
-      
+
       ;;
     *)
       flag="$OPT"
